@@ -1,0 +1,35 @@
+================ SE-FedKAN run_all @ 20260616_115216 ================
+SEEDS=5 DEVICE=cuda
+torch 2.5.1+cu121 cuda True
+
+---- [1/4] smoke + unit tests ----
+=== SEFedKAN smoke test (synthetic AMC, CPU) ===
+
+[sefedkan]  (3.6s)
+   avg_acc      = 0.16699879533714718
+   bwt          = 0.10335435159504414
+   forgetting   = 0.0099029247649014
+   total_bits   = 3856608.0
+   final_grid   = 6
+   params       = 4080
+
+[fedkan_static]  (2.1s)
+   avg_acc      = 0.16652941207091013
+   bwt          = 0.09954961622133851
+   forgetting   = 0.015824493020772934
+   total_bits   = 6684672.0
+   final_grid   = 4
+   params       = 3264
+
+[fedavg_mlp]  (1.2s)
+   avg_acc      = 0.15649891810284722
+   bwt          = 0.06395820691250265
+   forgetting   = 0.01882235473021865
+   total_bits   = 6897664.0
+   final_grid   = 0
+   params       = 3368
+
+SMOKE PASS
+......                                                                   [100%]
+6 passed in 2.78s
+---- [2/4] synthetic full (no download needed) ----

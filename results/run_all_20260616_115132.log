@@ -1,0 +1,34 @@
+================ SE-FedKAN run_all @ 20260616_115132 ================
+SEEDS=5 DEVICE=cuda
+torch 2.5.1+cu121 cuda True
+
+---- [1/4] smoke + unit tests ----
+=== SEFedKAN smoke test (synthetic AMC, CPU) ===
+
+[sefedkan]  (3.8s)
+   avg_acc      = 0.16699879533714718
+   bwt          = 0.10396731831133366
+   forgetting   = 0.008578008506447077
+   total_bits   = 3857120.0
+   final_grid   = 6
+   params       = 4080
+
+[fedkan_static]  (2.2s)
+   avg_acc      = 0.16652941207091013
+   bwt          = 0.09954961622133851
+   forgetting   = 0.015824493020772934
+   total_bits   = 6684672.0
+   final_grid   = 4
+   params       = 3264
+
+[fedavg_mlp]  (1.3s)
+   avg_acc      = 0.15649891810284722
+   bwt          = 0.06395820691250265
+   forgetting   = 0.01882235473021865
+   total_bits   = 6897664.0
+   final_grid   = 0
+   params       = 3368
+
+SMOKE PASS
+/home/daipv11/.conda/envs/sefedkan/bin/python: No module named pytest
+PYTEST FAILED — aborting

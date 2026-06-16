@@ -1,0 +1,136 @@
+================ SE-FedKAN run_all @ 20260616_131605 ================
+SEEDS=5 DEVICE=cuda
+torch 2.5.1+cu121 cuda True
+
+---- [1/4] smoke + unit tests ----
+=== SEFedKAN smoke test (synthetic AMC, CPU) ===
+
+[sefedkan]  (3.0s)
+   avg_acc      = 0.16762301491366494
+   bwt          = 0.10455694142729044
+   forgetting   = 0.007988385390490294
+   total_bits   = 3857824.0
+   final_grid   = 6
+   params       = 4080
+
+[fedkan_static]  (1.8s)
+   avg_acc      = 0.16652941207091013
+   bwt          = 0.09954961622133851
+   forgetting   = 0.015824493020772934
+   total_bits   = 6684672.0
+   final_grid   = 4
+   params       = 3264
+
+[fedavg_mlp]  (0.6s)
+   avg_acc      = 0.15649891810284722
+   bwt          = 0.06395820691250265
+   forgetting   = 0.01882235473021865
+   total_bits   = 6897664.0
+   final_grid   = 0
+   params       = 3368
+
+SMOKE PASS
+......                                                                   [100%]
+6 passed in 2.75s
+---- [2/4] synthetic full (no download needed) ----
+Traceback (most recent call last):
+  File "/home/daipv11/se-fedkan-leo/scripts/run_main.py", line 68, in main
+    res, log = run_experiment(cfg)
+               ^^^^^^^^^^^^^^^^^^^
+  File "/home/daipv11/se-fedkan-leo/scripts/../src/sefedkan/experiment.py", line 231, in run_experiment
+    fed.local_train(local, Xtr, ytr, cfg.epochs, cfg.lr, cfg.mu, gvec,
+  File "/home/daipv11/se-fedkan-leo/scripts/../src/sefedkan/fed.py", line 48, in local_train
+    loss = loss + 0.5 * mu * ((cur - global_vec) ** 2).sum()
+                               ~~~~^~~~~~~~~~~~
+RuntimeError: Expected all tensors to be on the same device, but found at least two devices, cuda:0 and cpu!
+Traceback (most recent call last):
+  File "/home/daipv11/se-fedkan-leo/scripts/run_main.py", line 68, in main
+    res, log = run_experiment(cfg)
+               ^^^^^^^^^^^^^^^^^^^
+  File "/home/daipv11/se-fedkan-leo/scripts/../src/sefedkan/experiment.py", line 231, in run_experiment
+    fed.local_train(local, Xtr, ytr, cfg.epochs, cfg.lr, cfg.mu, gvec,
+  File "/home/daipv11/se-fedkan-leo/scripts/../src/sefedkan/fed.py", line 48, in local_train
+    loss = loss + 0.5 * mu * ((cur - global_vec) ** 2).sum()
+                               ~~~~^~~~~~~~~~~~
+RuntimeError: Expected all tensors to be on the same device, but found at least two devices, cuda:0 and cpu!
+Traceback (most recent call last):
+  File "/home/daipv11/se-fedkan-leo/scripts/run_main.py", line 68, in main
+    res, log = run_experiment(cfg)
+               ^^^^^^^^^^^^^^^^^^^
+  File "/home/daipv11/se-fedkan-leo/scripts/../src/sefedkan/experiment.py", line 231, in run_experiment
+    fed.local_train(local, Xtr, ytr, cfg.epochs, cfg.lr, cfg.mu, gvec,
+  File "/home/daipv11/se-fedkan-leo/scripts/../src/sefedkan/fed.py", line 48, in local_train
+    loss = loss + 0.5 * mu * ((cur - global_vec) ** 2).sum()
+                               ~~~~^~~~~~~~~~~~
+RuntimeError: Expected all tensors to be on the same device, but found at least two devices, cuda:0 and cpu!
+Traceback (most recent call last):
+  File "/home/daipv11/se-fedkan-leo/scripts/run_main.py", line 68, in main
+    res, log = run_experiment(cfg)
+               ^^^^^^^^^^^^^^^^^^^
+  File "/home/daipv11/se-fedkan-leo/scripts/../src/sefedkan/experiment.py", line 231, in run_experiment
+    fed.local_train(local, Xtr, ytr, cfg.epochs, cfg.lr, cfg.mu, gvec,
+  File "/home/daipv11/se-fedkan-leo/scripts/../src/sefedkan/fed.py", line 48, in local_train
+    loss = loss + 0.5 * mu * ((cur - global_vec) ** 2).sum()
+                               ~~~~^~~~~~~~~~~~
+RuntimeError: Expected all tensors to be on the same device, but found at least two devices, cuda:0 and cpu!
+Traceback (most recent call last):
+  File "/home/daipv11/se-fedkan-leo/scripts/run_main.py", line 68, in main
+    res, log = run_experiment(cfg)
+               ^^^^^^^^^^^^^^^^^^^
+  File "/home/daipv11/se-fedkan-leo/scripts/../src/sefedkan/experiment.py", line 231, in run_experiment
+    fed.local_train(local, Xtr, ytr, cfg.epochs, cfg.lr, cfg.mu, gvec,
+  File "/home/daipv11/se-fedkan-leo/scripts/../src/sefedkan/fed.py", line 48, in local_train
+    loss = loss + 0.5 * mu * ((cur - global_vec) ** 2).sum()
+                               ~~~~^~~~~~~~~~~~
+RuntimeError: Expected all tensors to be on the same device, but found at least two devices, cuda:0 and cpu!
+sefedkan         seed=0 acc=0.3125 bits=1.250e+08 grid=13 (26.6s)
+sefedkan         seed=1 acc=0.3653 bits=1.427e+08 grid=13 (26.3s)
+sefedkan         seed=2 acc=0.3678 bits=1.164e+08 grid=13 (28.9s)
+sefedkan         seed=3 acc=0.3643 bits=1.274e+08 grid=13 (28.7s)
+sefedkan         seed=4 acc=0.3502 bits=1.319e+08 grid=13 (26.6s)
+fedkan_static    seed=0 acc=0.2965 bits=1.730e+08 grid=5 (24.6s)
+fedkan_static    seed=1 acc=0.3522 bits=1.855e+08 grid=5 (26.6s)
+fedkan_static    seed=2 acc=0.3646 bits=1.817e+08 grid=5 (26.1s)
+fedkan_static    seed=3 acc=0.3425 bits=1.792e+08 grid=5 (25.4s)
+fedkan_static    seed=4 acc=0.3332 bits=1.830e+08 grid=5 (27.0s)
+fedkan_dual      seed=0 acc=0.2539 bits=7.454e+07 grid=13 (25.9s)
+fedkan_dual      seed=1 acc=0.2784 bits=7.873e+07 grid=13 (28.3s)
+fedkan_dual      seed=2 acc=0.3106 bits=8.227e+07 grid=13 (27.2s)
+fedkan_dual      seed=3 acc=0.3052 bits=8.277e+07 grid=13 (26.4s)
+fedkan_dual      seed=4 acc=0.3496 bits=8.338e+07 grid=13 (26.4s)
+fedkan_no_pseudo seed=0 acc=0.3139 bits=1.152e+08 grid=13 (23.1s)
+fedkan_no_pseudo seed=1 acc=0.3847 bits=1.427e+08 grid=13 (24.9s)
+fedkan_no_pseudo seed=2 acc=0.3816 bits=1.157e+08 grid=13 (24.3s)
+fedkan_no_pseudo seed=3 acc=0.3822 bits=1.229e+08 grid=13 (23.4s)
+fedkan_no_pseudo seed=4 acc=0.3664 bits=1.280e+08 grid=13 (24.2s)
+fedkan_no_evolve seed=0 acc=0.2494 bits=7.403e+07 grid=5 (24.9s)
+fedkan_no_evolve seed=1 acc=0.2943 bits=7.234e+07 grid=5 (26.4s)
+fedkan_no_evolve seed=2 acc=0.3213 bits=7.657e+07 grid=5 (26.0s)
+fedkan_no_evolve seed=3 acc=0.3026 bits=7.916e+07 grid=5 (25.7s)
+fedkan_no_evolve seed=4 acc=0.2849 bits=7.324e+07 grid=5 (26.5s)
+fedavg_mlp       seed=0 acc=0.2670 bits=1.734e+08 grid=0 (8.5s)
+fedavg_mlp       seed=1 acc=0.3193 bits=1.860e+08 grid=0 (8.6s)
+fedavg_mlp       seed=2 acc=0.3194 bits=1.822e+08 grid=0 (8.5s)
+fedavg_mlp       seed=3 acc=0.3194 bits=1.797e+08 grid=0 (8.4s)
+fedavg_mlp       seed=4 acc=0.3078 bits=1.834e+08 grid=0 (8.5s)
+!! fedprox_mlp seed=0 FAILED: Expected all tensors to be on the same device, but found at least two devices, cuda:0 and cpu!
+!! fedprox_mlp seed=1 FAILED: Expected all tensors to be on the same device, but found at least two devices, cuda:0 and cpu!
+!! fedprox_mlp seed=2 FAILED: Expected all tensors to be on the same device, but found at least two devices, cuda:0 and cpu!
+!! fedprox_mlp seed=3 FAILED: Expected all tensors to be on the same device, but found at least two devices, cuda:0 and cpu!
+!! fedprox_mlp seed=4 FAILED: Expected all tensors to be on the same device, but found at least two devices, cuda:0 and cpu!
+
+=== summary (mean +/- std over seeds) ===
+sefedkan         acc=0.3520+/-0.0207 bits=1.287e+08 grid=13
+fedkan_static    acc=0.3378+/-0.0231 bits=1.805e+08 grid=5
+fedkan_dual      acc=0.2996+/-0.0322 bits=8.034e+07 grid=13
+fedkan_no_pseudo acc=0.3658+/-0.0267 bits=1.249e+08 grid=13
+fedkan_no_evolve acc=0.2905+/-0.0238 bits=7.507e+07 grid=5
+fedavg_mlp       acc=0.3066+/-0.0203 bits=1.809e+08 grid=0
+
+wrote results/synth.csv
+---- [3/4] SKIP rml2016 (missing data/RML2016.10a_dict.pkl) ----
+---- [4/4] SKIP rml2018 (missing data/GOLD_XYZ_OSC.0001_1024.hdf5) ----
+
+================ DONE @ 13:28:02 ================
+Results: results/*.csv ; per-slot logs: results/logs/*.npz ; this log: results/run_all_20260616_131605.log
+Now: git add results/ && git commit -m 'results: server run 20260616_131605' && git push

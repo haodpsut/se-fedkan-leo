@@ -1,0 +1,71 @@
+================ SE-FedKAN run_all @ 20260616_120110 ================
+SEEDS=3 DEVICE=cuda
+torch 2.5.1+cu121 cuda True
+
+---- [1/4] smoke + unit tests ----
+=== SEFedKAN smoke test (synthetic AMC, CPU) ===
+
+[sefedkan]  (2.9s)
+   avg_acc      = 0.16762301491366494
+   bwt          = 0.10404795594513416
+   forgetting   = 0.008578008506447077
+   total_bits   = 3857600.0
+   final_grid   = 6
+   params       = 4080
+
+[fedkan_static]  (1.6s)
+   avg_acc      = 0.16652941207091013
+   bwt          = 0.09954961622133851
+   forgetting   = 0.015824493020772934
+   total_bits   = 6684672.0
+   final_grid   = 4
+   params       = 3264
+
+[fedavg_mlp]  (0.7s)
+   avg_acc      = 0.15649891810284722
+   bwt          = 0.06395820691250265
+   forgetting   = 0.01882235473021865
+   total_bits   = 6897664.0
+   final_grid   = 0
+   params       = 3368
+
+SMOKE PASS
+......                                                                   [100%]
+6 passed in 2.78s
+---- [2/4] synthetic full (no download needed) ----
+sefedkan         seed=0 acc=0.3125 bits=1.250e+08 grid=13 (27.6s)
+sefedkan         seed=1 acc=0.3653 bits=1.427e+08 grid=13 (27.2s)
+sefedkan         seed=2 acc=0.3678 bits=1.164e+08 grid=13 (30.2s)
+fedkan_static    seed=0 acc=0.2965 bits=1.730e+08 grid=5 (29.1s)
+fedkan_static    seed=1 acc=0.3522 bits=1.855e+08 grid=5 (28.7s)
+fedkan_static    seed=2 acc=0.3646 bits=1.817e+08 grid=5 (26.9s)
+fedkan_dual      seed=0 acc=0.2539 bits=7.454e+07 grid=13 (25.7s)
+fedkan_dual      seed=1 acc=0.2784 bits=7.873e+07 grid=13 (27.3s)
+fedkan_dual      seed=2 acc=0.3106 bits=8.227e+07 grid=13 (27.1s)
+fedkan_no_pseudo seed=0 acc=0.3139 bits=1.152e+08 grid=13 (24.7s)
+fedkan_no_pseudo seed=1 acc=0.3847 bits=1.427e+08 grid=13 (26.7s)
+fedkan_no_pseudo seed=2 acc=0.3816 bits=1.157e+08 grid=13 (24.6s)
+fedkan_no_evolve seed=0 acc=0.2494 bits=7.403e+07 grid=5 (24.8s)
+fedkan_no_evolve seed=1 acc=0.2943 bits=7.234e+07 grid=5 (28.0s)
+fedkan_no_evolve seed=2 acc=0.3213 bits=7.657e+07 grid=5 (25.6s)
+fedavg_mlp       seed=0 acc=0.2670 bits=1.734e+08 grid=0 (9.2s)
+fedavg_mlp       seed=1 acc=0.3193 bits=1.860e+08 grid=0 (10.6s)
+fedavg_mlp       seed=2 acc=0.3194 bits=1.822e+08 grid=0 (9.3s)
+Traceback (most recent call last):
+  File "/home/daipv11/se-fedkan-leo/scripts/run_main.py", line 89, in <module>
+    main()
+  File "/home/daipv11/se-fedkan-leo/scripts/run_main.py", line 60, in main
+    res, log = run_experiment(cfg)
+               ^^^^^^^^^^^^^^^^^^^
+  File "/home/daipv11/se-fedkan-leo/scripts/../src/sefedkan/experiment.py", line 225, in run_experiment
+    fed.align_to_grid(local, local.grid_size)
+                             ^^^^^^^^^^^^^^^
+  File "/home/daipv11/.conda/envs/sefedkan/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1931, in __getattr__
+    raise AttributeError(
+AttributeError: 'MLPClassifier' object has no attribute 'grid_size'
+---- [3/4] SKIP rml2016 (missing data/RML2016.10a_dict.pkl) ----
+---- [4/4] SKIP rml2018 (missing data/GOLD_XYZ_OSC.0001_1024.hdf5) ----
+
+================ DONE @ 12:08:40 ================
+Results: results/*.csv ; per-slot logs: results/logs/*.npz ; this log: results/run_all_20260616_120110.log
+Now: git add results/ && git commit -m 'results: server run 20260616_120110' && git push
