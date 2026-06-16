@@ -16,6 +16,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 import numpy as np
 import torch
+from torch.nn.utils import parameters_to_vector
 
 from . import data as datamod
 from . import orbit
@@ -221,10 +222,12 @@ def run_experiment(cfg: Config, verbose=False):
 
             gvec = None
             if cfg.mu > 0:
-                from torch.nn.utils import parameters_to_vector
-                fed.align_to_grid(local, local.grid_size)
-                gvec = parameters_to_vector(fed.clone_model(global_model).parameters()).detach() \
-                    if cfg.model_type == "mlp" else None
+                # FedProx anchor = current global, aligned to the local grid so
+                # the proximal term matches the local parameter vector dimension.
+                g_clone = fed.clone_model(global_model)
+                if hasattr(local, "evolve"):
+                    fed.align_to_grid(g_clone, local.grid_size)
+                gvec = parameters_to_vector(g_clone.parameters()).detach()
             fed.local_train(local, Xtr, ytr, cfg.epochs, cfg.lr, cfg.mu, gvec,
                             cfg.l1, cfg.weight_decay, device=cfg.device)
 

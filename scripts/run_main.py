@@ -53,11 +53,24 @@ def main():
                   device=a.device, n_nodes=a.n_nodes, slots_per_pass=a.slots_per_pass,
                   n_passes=a.n_passes, grid_size=a.grid_size, grid_max=a.grid_max,
                   epochs=a.epochs, per_combo=a.per_combo)
+    def flush_csv():
+        if not rows:
+            return
+        keys = list(rows[0].keys())
+        with open(a.out, "w", newline="") as fh:
+            w = csv.DictWriter(fh, fieldnames=keys); w.writeheader(); w.writerows(rows)
+
     for method in a.methods:
         for seed in range(a.seeds):
             cfg = make_config(method, seed=seed, **common)
             t0 = time.time()
-            res, log = run_experiment(cfg)
+            try:
+                res, log = run_experiment(cfg)
+            except Exception as e:
+                import traceback
+                print(f"!! {method} seed={seed} FAILED: {e}")
+                traceback.print_exc()
+                continue
             dt = time.time() - t0
             row = {"method": method, "seed": seed, "time_s": round(dt, 1), **{
                 k: res[k] for k in ["avg_acc", "bwt", "forgetting", "total_bits",
@@ -65,12 +78,12 @@ def main():
             rows.append(row)
             np.savez(os.path.join(a.logdir, f"{method}_s{seed}.npz"),
                      **{k: np.array(v, dtype=object) for k, v in log.items()})
+            flush_csv()   # write incrementally so a later crash never loses earlier runs
             print(f"{method:16s} seed={seed} acc={res['avg_acc']:.4f} "
                   f"bits={res['total_bits']:.3e} grid={res['final_grid']} ({dt:.1f}s)")
 
-    keys = list(rows[0].keys())
-    with open(a.out, "w", newline="") as fh:
-        w = csv.DictWriter(fh, fieldnames=keys); w.writeheader(); w.writerows(rows)
+    if not rows:
+        print("no successful runs"); return
 
     # aggregate mean+-std per method
     agg = {}
