@@ -14,6 +14,7 @@ dependencies:
   - h5py
   - matplotlib
   - tqdm
+  - pytest
   - pip
   - pip:
       - skyfield

@@ -7,6 +7,7 @@ pyyaml>=6.0
 h5py>=3.8          # RadioML 2018.01A is HDF5
 matplotlib>=3.7    # quick local sanity plots only; paper figures are TikZ
 tqdm>=4.65
+pytest>=7.0
 # optional, server only, for real TLE orbits (otherwise analytic orbit.py is used):
 # skyfield>=1.45
 # sgp4>=2.21

@@ -27,7 +27,11 @@ echo
 
 echo "---- [1/4] smoke + unit tests ----"
 python scripts/smoke.py || { echo "SMOKE FAILED — aborting"; exit 1; }
-python -m pytest tests/ -q || { echo "PYTEST FAILED — aborting"; exit 1; }
+if python -c "import pytest" 2>/dev/null; then
+  python -m pytest tests/ -q || { echo "PYTEST FAILED — aborting"; exit 1; }
+else
+  echo "pytest not installed -> skipping unit tests (run 'pip install pytest' to enable)"
+fi
 
 echo "---- [2/4] synthetic full (no download needed) ----"
 python scripts/run_main.py --source synthetic --seeds "${SEEDS}" \
