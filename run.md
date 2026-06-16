@@ -35,6 +35,27 @@ python scripts/smoke.py        # expect: SMOKE PASS
 python -m pytest tests/ -q     # expect: 6 passed
 ```
 
+## 1b. Run everything inside tmux (recommended for the long jobs)
+`run_all.sh` runs smoke -> pytest -> synthetic -> rml2016 -> rml2018 (skips a
+RadioML run if its file is missing) and tees all output to
+`results/run_all_<timestamp>.log`.
+```bash
+tmux new -s sefedkan                 # start a detachable session
+conda activate sefedkan
+bash scripts/run_all.sh              # or: SEEDS=3 DEVICE=cuda bash scripts/run_all.sh
+# detach: press Ctrl-b then d   (job keeps running)
+```
+Reattach / monitor later:
+```bash
+tmux attach -t sefedkan             # reattach
+tmux ls                             # list sessions
+tail -f results/run_all_*.log       # follow progress without attaching
+```
+When it prints DONE, push the results:
+```bash
+git add results/ && git commit -m "results: server run" && git push
+```
+
 ## 2. Synthetic full run (no download needed, larger than smoke)
 ```bash
 python scripts/run_main.py --source synthetic --seeds 5 --out results/synth.csv
