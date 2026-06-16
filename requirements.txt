@@ -1,0 +1,12 @@
+# Self-Evolving Federated KAN — runtime deps (pip-in-conda OK on server)
+torch>=2.1
+numpy>=1.24
+scipy>=1.10
+scikit-learn>=1.3
+pyyaml>=6.0
+h5py>=3.8          # RadioML 2018.01A is HDF5
+matplotlib>=3.7    # quick local sanity plots only; paper figures are TikZ
+tqdm>=4.65
+# optional, server only, for real TLE orbits (otherwise analytic orbit.py is used):
+# skyfield>=1.45
+# sgp4>=2.21

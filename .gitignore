@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+.venv/
+data/*.pkl
+data/*.hdf5
+data/*.h5
+*.npz
+!results/logs/.gitkeep
+.DS_Store
