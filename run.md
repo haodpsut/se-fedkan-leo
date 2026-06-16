@@ -3,12 +3,30 @@
 Workflow: I (Claude) build + smoke-test locally and push. You pull to the RTX 4090
 server, run, and push `results/` back. Then I pull and analyze (S6).
 
-## 0. Environment (conda-only host)
+## 0. Environment bootstrap on the RTX 4090 server (conda-only host)
 ```bash
+# clone
+git clone https://github.com/haodpsut/se-fedkan-leo.git
+cd se-fedkan-leo
+mkdir -p data results/logs
+
+# create the conda env (numpy/scipy/sklearn/h5py/pyyaml/matplotlib/tqdm + skyfield/sgp4)
 conda env create -f environment.yml
 conda activate sefedkan
+
+# install CUDA-enabled PyTorch INSIDE the env via the cu121 index
+# (lesson from satellite-KAN: use --index-url, NOT --extra-index-url)
 pip install torch --index-url https://download.pytorch.org/whl/cu121
-python -c "import torch;print(torch.__version__, torch.cuda.is_available())"
+
+# verify GPU is visible
+python -c "import torch;print('torch',torch.__version__,'cuda',torch.cuda.is_available(),torch.cuda.get_device_name(0) if torch.cuda.is_available() else '')"
+```
+If `conda env create` is slow or conflicts, the minimal manual path also works:
+```bash
+conda create -n sefedkan python=3.11 -y && conda activate sefedkan
+pip install numpy scipy scikit-learn pyyaml h5py matplotlib tqdm
+pip install torch --index-url https://download.pytorch.org/whl/cu121
+# optional, only for real-TLE orbits: pip install skyfield sgp4
 ```
 
 ## 1. Smoke (verify wiring on the server, ~10s, CPU is fine)
