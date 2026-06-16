@@ -33,6 +33,8 @@ def local_train(model, X, y, epochs=3, lr=0.01, mu=0.0, global_vec=None,
     opt = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=weight_decay)
     X = torch.as_tensor(X, dtype=torch.float32, device=device)
     y = torch.as_tensor(y, dtype=torch.long, device=device)
+    if global_vec is not None:
+        global_vec = global_vec.to(device)   # FedProx anchor must match model device
     n = len(X)
     for _ in range(epochs):
         perm = torch.randperm(n, device=device)
