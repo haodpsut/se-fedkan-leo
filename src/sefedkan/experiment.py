@@ -54,6 +54,7 @@ class Config:
     l1: float = 0.0
     weight_decay: float = 1e-4
     slot_samples: int = 96
+    max_eval: int = 256              # cap held-out eval per SNR regime (speed)
     label_frac: float = 0.3
     pseudo_conf: float = 0.9
     pseudo_enabled: bool = True
@@ -99,10 +100,13 @@ def _build_nodes(cfg, X, y, snr, n_classes, rng):
         for s in nodes[nidx]["pool"]:
             nodes[nidx]["pool"][s] = np.array(nodes[nidx]["pool"][s])
 
-    # regime eval sets by SNR bin (global, held-out)
+    # regime eval sets by SNR bin (global, held-out), capped for speed
     eval_by_snr = {}
     for s in np.unique(snr_bin[eval_idx]):
-        eval_by_snr[int(s)] = eval_idx[snr_bin[eval_idx] == s]
+        ids = eval_idx[snr_bin[eval_idx] == s]
+        if len(ids) > cfg.max_eval:
+            ids = rng.choice(ids, cfg.max_eval, replace=False)
+        eval_by_snr[int(s)] = ids
     return nodes, eval_by_snr, train_idx, eval_idx
 
 

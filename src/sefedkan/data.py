@@ -96,20 +96,26 @@ def synthetic_amc(mods=None, snr_list=None, per_combo=200, L=128, seed=0) -> AMC
 
 
 # ---- featurization ---------------------------------------------------------
-def _spectral_moments(frame):
-    x = frame[0] + 1j * frame[1]
-    X = np.fft.fftshift(np.fft.fft(x))
-    psd = (np.abs(X) ** 2); psd = psd / (psd.sum() + 1e-9)
-    f = np.linspace(-0.5, 0.5, len(psd))
-    m1 = (f * psd).sum()
-    m2 = ((f - m1) ** 2 * psd).sum()
-    m3 = ((f - m1) ** 3 * psd).sum()
-    m4 = ((f - m1) ** 4 * psd).sum()
-    # amplitude / phase higher-order stats (classic AMC cumulant proxies)
+def _spectral_moments_batch(frames):
+    """Vectorized spectral + amplitude/phase moments over all frames at once.
+
+    frames: (N, 2, L) -> (N, 10). Replaces the old per-frame Python loop, which
+    was the bottleneck on the large RadioML 2018 set.
+    """
+    x = frames[:, 0] + 1j * frames[:, 1]                  # (N, L)
+    X = np.fft.fftshift(np.fft.fft(x, axis=1), axes=1)
+    psd = np.abs(X) ** 2
+    psd = psd / (psd.sum(1, keepdims=True) + 1e-9)
+    f = np.linspace(-0.5, 0.5, X.shape[1])[None, :]
+    m1 = (f * psd).sum(1)
+    d = f - m1[:, None]
+    m2 = (d ** 2 * psd).sum(1)
+    m3 = (d ** 3 * psd).sum(1)
+    m4 = (d ** 4 * psd).sum(1)
     a = np.abs(x); ph = np.angle(x)
-    feats = [m1, m2, m3, m4, a.mean(), a.std(), a.max(),
-             np.std(ph), np.mean(a ** 2), np.mean(a ** 4)]
-    return np.array(feats, dtype=np.float32)
+    feats = np.stack([m1, m2, m3, m4, a.mean(1), a.std(1), a.max(1),
+                      ph.std(1), (a ** 2).mean(1), (a ** 4).mean(1)], axis=1)
+    return feats.astype(np.float32)
 
 
 def featurize(bank: AMCBank, mode="multimodal", iq_ds=8):
@@ -120,7 +126,7 @@ def featurize(bank: AMCBank, mode="multimodal", iq_ds=8):
         step = max(1, L // iq_ds)
         iq = bank.frames[:, :, ::step][:, :, :iq_ds].reshape(len(bank.frames), -1)
     if mode in ("stat", "multimodal"):
-        stat = np.stack([_spectral_moments(f) for f in bank.frames])
+        stat = _spectral_moments_batch(bank.frames)
     if mode == "iq":
         X, dims = iq, {"iq": iq.shape[1]}
     elif mode == "stat":
