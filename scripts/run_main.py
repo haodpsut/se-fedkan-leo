@@ -36,9 +36,12 @@ def parse():
     p.add_argument("--slots-per-pass", type=int, default=30)
     p.add_argument("--n-passes", type=int, default=4)
     p.add_argument("--grid-size", type=int, default=5)
-    p.add_argument("--grid-max", type=int, default=13)
-    p.add_argument("--epochs", type=int, default=3)
+    p.add_argument("--grid-max", type=int, default=9)     # validated cap (13 overfits small slots)
+    p.add_argument("--epochs", type=int, default=4)
     p.add_argument("--per-combo", type=int, default=200)
+    p.add_argument("--slot-samples", type=int, default=128)
+    p.add_argument("--n-init-classes", type=int, default=3)
+    p.add_argument("--lr", type=float, default=0.005)
     p.add_argument("--drift-mode", default="incremental", choices=["incremental", "snr_sweep"])
     p.add_argument("--arch", default="conv", choices=["conv", "flat"])
     p.add_argument("--out", default="results/results.csv")
@@ -55,7 +58,8 @@ def main():
                   device=a.device, n_nodes=a.n_nodes, slots_per_pass=a.slots_per_pass,
                   n_passes=a.n_passes, grid_size=a.grid_size, grid_max=a.grid_max,
                   epochs=a.epochs, per_combo=a.per_combo, drift_mode=a.drift_mode,
-                  arch=a.arch)
+                  arch=a.arch, slot_samples=a.slot_samples,
+                  n_init_classes=a.n_init_classes, lr=a.lr)
     def flush_csv():
         if not rows:
             return
