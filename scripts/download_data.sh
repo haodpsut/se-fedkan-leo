@@ -14,7 +14,7 @@ URL2018="https://opendata.deepsig.io/datasets/2018.01/2018.01.OSC.0001_1024x2M.h
 
 echo "==> [1] RML2016.10a (~600 MB)"
 if [ ! -f RML2016.10a_dict.pkl ]; then
-  wget -c -O RML2016.10a.tar.bz2 "$URL2016"
+  wget -c --no-check-certificate -O RML2016.10a.tar.bz2 "$URL2016"
   tar xjf RML2016.10a.tar.bz2
   # the tarball may extract a file literally named RML2016.10a_dict.pkl,
   # or RML2016.10a.pkl — normalize to the expected name:
@@ -27,7 +27,7 @@ fi
 if [ "${1:-}" = "--2018" ]; then
   echo "==> [2] RML2018.01a (~20 GB) — this is large and slow"
   if [ ! -f GOLD_XYZ_OSC.0001_1024.hdf5 ]; then
-    wget -c -O RML2018.01a.tar.gz "$URL2018"
+    wget -c --no-check-certificate -O RML2018.01a.tar.gz "$URL2018"
     tar xzf RML2018.01a.tar.gz
     ls -la *.hdf5 *.h5 2>/dev/null || true
     echo "NOTE: if the extracted .hdf5/.h5 name differs from GOLD_XYZ_OSC.0001_1024.hdf5,"
