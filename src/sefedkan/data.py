@@ -119,7 +119,17 @@ def _spectral_moments_batch(frames):
 
 
 def featurize(bank: AMCBank, mode="multimodal", iq_ds=8):
-    """Return (X, view_dims). view_dims documents the multimodal split."""
+    """Return (X, view_dims). view_dims documents the multimodal split.
+
+    mode="raw" returns the full (N, 2, L) I/Q frames (per-channel standardized)
+    for the conv front-end; other modes return flat (N, d) feature vectors.
+    """
+    if mode == "raw":
+        X = bank.frames.astype(np.float32)                 # (N, 2, L)
+        mu = X.mean(axis=(0, 2), keepdims=True)
+        sd = X.std(axis=(0, 2), keepdims=True) + 1e-6
+        X = ((X - mu) / sd).astype(np.float32)
+        return X, {"raw_iq": int(X.shape[1] * X.shape[2])}
     if mode in ("iq", "multimodal"):
         # downsample raw I/Q to keep KAN input modest
         L = bank.frames.shape[-1]

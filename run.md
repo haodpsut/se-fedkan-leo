@@ -85,12 +85,26 @@ python scripts/run_main.py --source rml2018 \
                           snr_med, n_part) for the time-series figures
 - console "summary (mean +/- std over seeds)" block — paste into `results/summary.txt`
 
+## Default setup (since the pivot)
+- `--arch conv` (1D-CNN front-end on raw I/Q) and `--drift-mode incremental`
+  (new modulation classes appear over the mission) are the DEFAULTS now.
+  The old flat-feature / snr_sweep paths remain for the negative-control ablation
+  (`--arch flat`, `--drift-mode snr_sweep`).
+- Headline metrics are now `final_acc_all` (accuracy on ALL classes at the end)
+  and `forgetting` (continual-learning), plus `total_bits` and `detection_delay`.
+
 ## What ours should show (the story to verify, NOT to assume)
-- `sefedkan` >= `fedkan_static` on avg_acc  -> the *evolution* helps, not just KAN
-- `sefedkan` total_bits <= MLP baselines    -> controller compresses
-- `sefedkan` final_grid grows over passes   -> drift triggered self-evolution
-- ablations rank: full > {no_evolve, no_pseudo, dual, static}  (some may not — report honestly)
-- Wilcoxon over seeds for the headline acc gap; report mean +/- std.
+- `sefedkan` highest `final_acc_all` and lowest `forgetting` vs all baselines
+  -> self-evolution + drift-aware pseudo retains old classes best
+- `sefedkan` total_bits ~2x lower than MLP / static baselines -> controller compresses
+- ablations: full > no_evolve (evolution helps final acc);
+  full forgets less than no_pseudo (drift-aware pseudo helps);
+  bandit beats static/dual on the acc-vs-bits Pareto
+- snr_sweep run is the NEGATIVE control: evolution should NOT help there (cyclic
+  drift gives no growing complexity) — report this honestly as the boundary.
+- Wilcoxon over seeds for the headline gaps; report mean +/- std.
+- NOTE: baselines may win instantaneous `avg_acc` early (few classes); ours wins
+  the continual metrics (final_acc_all, forgetting). State this honestly.
 
 ## Methods
 sefedkan (ours), fedkan_static, fedkan_dual, fedkan_no_pseudo, fedkan_no_evolve,

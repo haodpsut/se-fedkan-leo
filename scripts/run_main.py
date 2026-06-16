@@ -39,6 +39,8 @@ def parse():
     p.add_argument("--grid-max", type=int, default=13)
     p.add_argument("--epochs", type=int, default=3)
     p.add_argument("--per-combo", type=int, default=200)
+    p.add_argument("--drift-mode", default="incremental", choices=["incremental", "snr_sweep"])
+    p.add_argument("--arch", default="conv", choices=["conv", "flat"])
     p.add_argument("--out", default="results/results.csv")
     p.add_argument("--logdir", default="results/logs")
     return p.parse_args()
@@ -52,7 +54,8 @@ def main():
     common = dict(source=a.source, data_path=a.data_path, feature=a.feature,
                   device=a.device, n_nodes=a.n_nodes, slots_per_pass=a.slots_per_pass,
                   n_passes=a.n_passes, grid_size=a.grid_size, grid_max=a.grid_max,
-                  epochs=a.epochs, per_combo=a.per_combo)
+                  epochs=a.epochs, per_combo=a.per_combo, drift_mode=a.drift_mode,
+                  arch=a.arch)
     def flush_csv():
         if not rows:
             return
@@ -73,8 +76,9 @@ def main():
                 continue
             dt = time.time() - t0
             row = {"method": method, "seed": seed, "time_s": round(dt, 1), **{
-                k: res[k] for k in ["avg_acc", "bwt", "forgetting", "total_bits",
-                                    "final_grid", "params", "n_classes", "in_dim", "T"]}}
+                k: res[k] for k in ["avg_acc", "final_acc_all", "bwt", "forgetting",
+                                    "detection_delay", "total_bits", "final_grid",
+                                    "params", "n_classes", "in_dim", "T"]}}
             rows.append(row)
             np.savez(os.path.join(a.logdir, f"{method}_s{seed}.npz"),
                      **{k: np.array(v, dtype=object) for k, v in log.items()})
